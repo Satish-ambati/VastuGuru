@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import * as Updates from "expo-updates";
 export default function TabsLayout() {
   const [language, setLanguage] = useState<string>("telugu");
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,6 +35,8 @@ export default function TabsLayout() {
     setLanguage(lang);
     setLanguageUpdated(prev => prev + 1);
     setModalVisible(false);
+
+    await Updates.reloadAsync();
   } catch (error) {
     console.error(`Failed to save language: ${error}`);
   }

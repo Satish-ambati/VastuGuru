@@ -530,6 +530,13 @@ const VastuShow = () => {
 </html>
 `;
   };
+// function handleSave(){
+//   console.log("Save functionality is not implemented yet.");
+//   Alert.alert(
+//     language === 'telugu' ? 'సేవ్ చేయడం లేదు' : 'Save Not Implemented',
+//     language === 'telugu' ? 'ఈ ఫీచర్ ప్రస్తుతం అందుబాటులో లేదు.' : 'This feature is currently not available.'
+//   );
+// }
   const downloadPDF = async () => {
     try {
       const html = generateHTMLContent();
@@ -633,6 +640,13 @@ const VastuShow = () => {
             {kala ? <ResultItem label={content[language].fields.kala} value={kala.toString()} /> : null}
           </View>
         </View>
+        {/* <TouchableOpacity 
+              style={styles.saveButton} 
+              onPress={handleSave}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.saveButtonText}>{content[language].save}</Text>
+            </TouchableOpacity> */}
       </ScrollView>
     </View>
   );
@@ -781,6 +795,28 @@ const styles = StyleSheet.create({
     marginTop: 50,
     fontWeight: '500',
   },
+  // saveButton: {
+  //   backgroundColor: '#10B981',
+  //   borderRadius: 16,
+  //   paddingVertical: 16,
+  //   paddingHorizontal: 40,
+  //   alignSelf: 'stretch',
+  //   shadowColor: '#10B981',
+  //   shadowOffset: {
+  //     width: 0,
+  //     height: 4,
+  //   },
+  //   shadowOpacity: 0.3,
+  //   shadowRadius: 8,
+  //   elevation: 6,
+  // },
+  // saveButtonText: {
+  //   fontSize: 16,
+  //   fontWeight: '700',
+  //   color: '#FFFFFF',
+  //   textAlign: 'center',
+  //   letterSpacing: 0.5,
+  // }
 });
 
 export default VastuShow;
