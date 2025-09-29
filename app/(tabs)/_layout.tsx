@@ -72,11 +72,26 @@ export default function TabsLayout() {
         }}
       >
         <Tabs.Screen
-          name="simha"
+          name="vastuCalculation"
           options={{
-            tabBarLabel: language === 'telugu' ? 'సింహ ద్వారం' : 'Simha Dwara',
+            tabBarLabel: language === 'telugu' ? 'వాస్తు లెక్కలు' : 'Vastu Calc',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="calculator-outline" size={size} color={color} />
+              <MaterialCommunityIcons
+                name="compass-outline"
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+          initialParams={screenOptions}
+        />
+
+          <Tabs.Screen
+          name="vastuShow"
+          options={{
+            tabBarLabel: language === 'telugu' ? 'వాస్తు ప్రదర్శన' : 'Vastu Show',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="home-outline" size={size} color={color} />
             ),
           }}
           initialParams={screenOptions}
@@ -95,40 +110,20 @@ export default function TabsLayout() {
           }}
           initialParams={screenOptions}
         />
+
         <Tabs.Screen
-          name="vastuShow"
+          name="simha"
           options={{
-            tabBarLabel: language === 'telugu' ? 'వాస్తు ప్రదర్శన' : 'Vastu Show',
+            tabBarLabel: language === 'telugu' ? 'సింహ ద్వారం' : 'Simha Dwara',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home-outline" size={size} color={color} />
+              <Ionicons name="calculator-outline" size={size} color={color} />
             ),
           }}
           initialParams={screenOptions}
         />
-        <Tabs.Screen
-          name="vastuCalculation"
-          options={{
-            tabBarLabel: language === 'telugu' ? 'వాస్తు లెక్కలు' : 'Vastu Calc',
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="compass-outline"
-                size={size}
-                color={color}
-              />
-            ),
-          }}
-          initialParams={screenOptions}
-        />
-        <Tabs.Screen
-          name="History"
-          options={{
-            tabBarLabel: language === 'telugu' ? 'చరిత్ర' : 'History',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="time-outline" size={size} color={color} />
-            ),
-          }}
-          initialParams={screenOptions}
-        />
+        
+        
+        
       </Tabs>
 
       {/* Language Selection Modal */}

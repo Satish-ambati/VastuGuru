@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, useWindowDimensions, TextInput, Modal } from 'react-native'
+import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useRoute } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,16 +12,6 @@ type VastuParams = {
 };
 
 type LanguageType = 'telugu' | 'english';
-
-type SavedData = {
-  name: string;
-  phoneNumber: string;
-  height: { feet: number; inches: number };
-  width: { feet: number; inches: number };
-  squareFeet: number | null;
-  squareYards: number | null;
-  timestamp: string;
-};
 
 const VastuShow = () => {
   const route = useRoute();
@@ -53,11 +43,6 @@ const VastuShow = () => {
   const [yogini, setYogini] = useState<string | null>(null);
   const [kala, setKala] = useState<number | null>(null);
 
-  // Form states
-  const [modalVisible, setModalVisible] = useState(false);
-  const [name, setName] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-
   // Language content - moved outside to avoid recreation
   const content = {
     telugu: {
@@ -70,17 +55,6 @@ const VastuShow = () => {
       height: "పొడవు",
       width: "వెడల్పు",
       save: "సేవ్ చేయండి",
-      saveForm: {
-        title: "వివరాలను సేవ్ చేయండి",
-        name: "పేరు",
-        namePlaceholder: "మీ పేరును నమోదు చేయండి",
-        phone: "ఫోన్ నంబర్",
-        phonePlaceholder: "మీ ఫోన్ నంబర్ నమోదు చేయండి",
-        submit: "సబ్మిట్",
-        cancel: "రద్దు చేయి",
-        required: "పేరు మరియు ఫోన్ నంబర్ అవసరం",
-        success: "వివరాలు విజయవంతంగా సేవ్ చేయబడ్డాయి"
-      },
       fields: {
         aayam: "ఆయామం",
         yards: "స్క్వేర్ గజాలు",
@@ -113,17 +87,6 @@ const VastuShow = () => {
       height: "Height",
       width: "Width",
       save: "Save",
-      saveForm: {
-        title: "Save Details",
-        name: "Name",
-        namePlaceholder: "Enter your name",
-        phone: "Phone Number",
-        phonePlaceholder: "Enter your phone number",
-        submit: "Submit",
-        cancel: "Cancel",
-        required: "Name and Phone Number are required",
-        success: "Details saved successfully"
-      },
       fields: {
         aayam: "Aayam",
         yards: "Square Yards",
@@ -567,52 +530,6 @@ const VastuShow = () => {
 </html>
 `;
   };
-
-  const handleSave = () => {
-    setModalVisible(true);
-  };
-
-  const handleSubmit = () => {
-    if (!name.trim() || !phoneNumber.trim()) {
-      Alert.alert(
-        content[language].saveForm.title,
-        content[language].saveForm.required
-      );
-      return;
-    }
-
-    // Create the data object
-    const savedData: SavedData = {
-      name: name.trim(),
-      phoneNumber: phoneNumber.trim(),
-      height: height!,
-      width: width!,
-      squareFeet: feets,
-      squareYards: yards,
-      timestamp: new Date().toISOString()
-    };
-
-    // Console log the object
-    console.log('Saved Data:', savedData);
-
-    // Show success message
-    Alert.alert(
-      content[language].saveForm.title,
-      content[language].saveForm.success
-    );
-
-    // Reset form and close modal
-    setName("");
-    setPhoneNumber("");
-    setModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setName("");
-    setPhoneNumber("");
-    setModalVisible(false);
-  };
-
   const downloadPDF = async () => {
     try {
       const html = generateHTMLContent();
@@ -716,79 +633,7 @@ const VastuShow = () => {
             {kala ? <ResultItem label={content[language].fields.kala} value={kala.toString()} /> : null}
           </View>
         </View>
-        
-        {/* Save Button */}
-        <TouchableOpacity 
-          style={styles.saveButton} 
-          onPress={handleSave}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.saveButtonText}>{content[language].save}</Text>
-        </TouchableOpacity>
       </ScrollView>
-
-      {/* Save Form Modal */}
-      <Modal
-        visible={modalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={handleCancel}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {content[language].saveForm.title}
-            </Text>
-            
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>
-                {content[language].saveForm.name}
-              </Text>
-              <TextInput
-                style={styles.textInput}
-                value={name}
-                onChangeText={setName}
-                placeholder={content[language].saveForm.namePlaceholder}
-                placeholderTextColor="#999"
-              />
-            </View>
-            
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>
-                {content[language].saveForm.phone}
-              </Text>
-              <TextInput
-                style={styles.textInput}
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                placeholder={content[language].saveForm.phonePlaceholder}
-                placeholderTextColor="#999"
-                keyboardType="phone-pad"
-              />
-            </View>
-            
-            <View style={styles.modalButtons}>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.cancelButton]} 
-                onPress={handleCancel}
-              >
-                <Text style={styles.cancelButtonText}>
-                  {content[language].saveForm.cancel}
-                </Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.submitButton]} 
-                onPress={handleSubmit}
-              >
-                <Text style={styles.submitButtonText}>
-                  {content[language].saveForm.submit}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -935,106 +780,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 50,
     fontWeight: '500',
-  },
-  saveButton: {
-    backgroundColor: '#10B981',
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 40,
-    alignSelf: 'stretch',
-    shadowColor: '#10B981',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-    marginBottom: 20,
-  },
-  saveButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    letterSpacing: 0.5,
-  },
-  // Modal Styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 24,
-    width: '100%',
-    maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1E293B',
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 8,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#F9FAFB',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginTop: 8,
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#F3F4F6',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-  },
-  submitButton: {
-    backgroundColor: '#10B981',
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  submitButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
 });
 
