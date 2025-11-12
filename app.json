@@ -40,8 +40,7 @@
             "backgroundColor": "#000000"
           }
         }
-      ],
-      "expo-sqlite"
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -50,9 +49,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "2419019c-3be8-4910-b201-adde54466b3a"
+        "projectId": "e7ce6f32-5326-40e7-bbfd-33c9596ab556"
       }
     },
-    "owner": "satish6677"
+    "owner": "satish0804"
   }
 }
