@@ -8,7 +8,11 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "build:android": "eas build --platform android",
+    "build:preview": "eas build --platform android --profile preview",
+    "submit:playstore": "eas submit --platform android",
+    "deploy": "eas update"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
@@ -28,6 +32,7 @@
     "expo-router": "~6.0.8",
     "expo-sharing": "^14.0.7",
     "expo-splash-screen": "~31.0.10",
+    "expo-sqlite": "~16.0.9",
     "expo-status-bar": "~3.0.8",
     "expo-symbols": "~1.0.7",
     "expo-system-ui": "~6.0.7",

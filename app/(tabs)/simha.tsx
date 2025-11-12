@@ -2,7 +2,6 @@ import { StyleSheet, Text, useWindowDimensions, View, ScrollView, TouchableOpaci
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
-
 const Simha = () => {
   const [language, setLanguage] = useState('telugu');
   const {width, height} = useWindowDimensions();

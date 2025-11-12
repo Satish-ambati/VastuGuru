@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/vastu.png",
     "scheme": "vastuguru",
+    "entryPoint": "expo-router/entry",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -19,7 +20,8 @@
         "monochromeImage": "./assets/images/vastu.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.satish0804.VastuGuru"
     },
     "web": {
       "output": "static",
@@ -38,7 +40,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -47,8 +50,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "cb62f178-f5a7-4787-8cc7-85d3708bd38f"
+        "projectId": "2419019c-3be8-4910-b201-adde54466b3a"
       }
-    }
+    },
+    "owner": "satish6677"
   }
 }

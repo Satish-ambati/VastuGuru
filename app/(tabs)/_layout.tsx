@@ -35,10 +35,12 @@ export default function TabsLayout() {
     setLanguage(lang);
     setLanguageUpdated(prev => prev + 1);
     setModalVisible(false);
-
-    await Updates.reloadAsync();
+    // Optional: Show a success message
+    console.log("Language saved successfully:", lang);
+    // Remove or comment out the reload for now to test
+    // await Updates.reloadAsync();
   } catch (error) {
-    console.error(`Failed to save language: ${error}`);
+    console.error("Failed to save language:", error);
   }
 }
 
@@ -124,7 +126,17 @@ export default function TabsLayout() {
           }}
           initialParams={screenOptions}
         />
-        
+        {/* <Tabs.Screen
+  name="history"
+  options={{
+    tabBarLabel: language === 'telugu' ? 'చరిత్ర' : 'History',
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="time-outline" size={size} color={color} />
+    ),
+  }}
+  initialParams={screenOptions}
+/> */}
+
         
         
       </Tabs>

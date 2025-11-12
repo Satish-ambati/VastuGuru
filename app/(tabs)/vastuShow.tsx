@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native'
+import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, useWindowDimensions, Modal, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useRoute } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,7 +15,7 @@ type LanguageType = 'telugu' | 'english';
 
 const VastuShow = () => {
   const route = useRoute();
-  
+
   const { height, width } = (route.params as VastuParams) || {};
   const [language, setLanguage] = useState<LanguageType>('telugu');
   const { width: screenWidth } = useWindowDimensions();
@@ -42,6 +42,11 @@ const VastuShow = () => {
   const [jati, setJati] = useState<string | null>(null);
   const [yogini, setYogini] = useState<string | null>(null);
   const [kala, setKala] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Save modal states
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [saveName, setSaveName] = useState('');
 
   // Language content - moved outside to avoid recreation
   const content = {
@@ -170,7 +175,7 @@ const VastuShow = () => {
     1: lang === 'telugu' ? "ఇంద్ర దిక్పతి - సౌఖ్యం" : "Indra Dikpati - Comfort",
     2: lang === 'telugu' ? "అగ్ని దిక్పతి - గృహదహనం" : "Agni Dikpati - House Fire",
     3: lang === 'telugu' ? "యమ దిక్పతి - ధర్మగుణము" : "Yama Dikpati - Righteousness",
-    4: lang === 'telugu' ? "నైరృతి దిక్పతి - శత్రుభయం" : "Nairuti Dikpati - Fear of Enemies",
+    4: lang === 'telugu' ? "నైరుడు దిక్పతి - శత్రుభయం" : "Nairuti Dikpati - Fear of Enemies",
     5: lang === 'telugu' ? "వరుణ దిక్పతి - పశు, ధనవృద్ధి" : "Varuna Dikpati - Cattle & Wealth Growth",
     6: lang === 'telugu' ? "వాయు దిక్పతి - చలనా గుణము" : "Vayu Dikpati - Mobility",
     7: lang === 'telugu' ? "కుబేర దిక్పతి - ధనవృద్ధి" : "Kubera Dikpati - Wealth Growth",
@@ -208,7 +213,7 @@ const VastuShow = () => {
   });
 
   const getAs = (lang: LanguageType) => ({
-    1: lang === 'telugu' ? "నష్టాంశ - ధన నష్టం" : "Nashtamsha - Loss of Wealth",
+    1: lang === 'telugu' ? "నష్టం - ధన నష్టం" : "Nashtamsha - Loss of Wealth",
     2: lang === 'telugu' ? "వృద్ధాంశ - అభివృద్ధి" : "Vriddhamsha - Progress",
     3: lang === 'telugu' ? "స్త్రీ ఆంశ - సౌభాగ్యం" : "Stri Amsha - Prosperity through Women",
     4: lang === 'telugu' ? "మృత్యుఆంశ - రోగభయం" : "Mrityu Amsha - Fear of Disease / Death",
@@ -332,11 +337,13 @@ const VastuShow = () => {
       if (curr === 'telugu' || curr === 'english') {
         setLanguage(curr);
       } else {
-        setLanguage('telugu'); // Set default to telugu
+        setLanguage('telugu');
       }
     } catch (err) {
-      console.log("Error in getting language", err);
-      setLanguage('telugu'); // Set default to telugu on error
+      console.error("Error in getting language", err);
+      setLanguage('telugu');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -351,7 +358,7 @@ const VastuShow = () => {
 
     const newHeight = conversion(height.feet, height.inches);
     const newWidth = conversion(width.feet, width.inches);
-    
+
     if (newHeight === 0 || newWidth === 0) {
       Alert.alert(
         language === 'telugu' ? 'లోపం' : 'Error',
@@ -362,10 +369,10 @@ const VastuShow = () => {
 
     setUh(newHeight);
     setUw(newWidth);
-    
+
     const area = newHeight * newWidth;
     setFeets(parseFloat(area.toFixed(2)));
-    
+
     const yardsValue = Math.floor(area / 9);
     setYards(yardsValue);
     calculateDetailedResults(yardsValue, area);
@@ -391,69 +398,69 @@ const VastuShow = () => {
     let num = (yardsValue * 8) % 12;
     if (num === 0) num = 12;
     setDanam(num);
-    
+
     num = (yardsValue * 3) % 8;
     if (num === 0) num = 8;
     setRunam(num);
-    
+
     let num1 = (yardsValue * 9) % 8;
     if (num1 === 0) num1 = 8;
     setAayam(currentAm[num1 as keyof typeof currentAm]);
-    
+
     let num2 = (yardsValue * 9) % 120;
     if (num2 === 0) num2 = 120;
     setYears(num2);
-    
+
     let num3 = (yardsValue * 6) % 30;
     if (num3 === 0) num3 = 30;
     setTidhi(currentTd[num3 as keyof typeof currentTd]);
-    
+
     let num4 = (yardsValue * 9) % 7;
     if (num4 === 0) num4 = 7;
     setWeek(currentWk[num4 as keyof typeof currentWk]);
-    
+
     let num5 = (yardsValue * 8) % 27;
     if (num5 === 0) num5 = 27;
     setStar(currentNk[num5 as keyof typeof currentNk]);
-    
+
     let num6 = (yardsValue * 9) % 8;
     if (num6 === 0) num6 = 8;
     setDikpathi(currentDp[num6 as keyof typeof currentDp]);
-    
+
     let num7 = (yardsValue * 6) % 9;
     if (num7 === 0) num7 = 9;
     setAmsha(currentAs[num7 as keyof typeof currentAs]);
     setGraham(currentGh[num7 as keyof typeof currentGh]);
-    
+
     let num8 = (yardsValue * 4) % 27;
     if (num8 === 0) num8 = 27;
     setYogam(currentYg[num8 as keyof typeof currentYg]);
-    
+
     let num9 = (yardsValue * 3) % 8;
     if (num9 === 0) num9 = 8;
     setYogini(currentYgm[num9 as keyof typeof currentYgm]);
-    
+
     let num10 = (yardsValue * 5) % 7;
     if (num10 === 0) num10 = 7;
     setKaranam(currentKm[num10 as keyof typeof currentKm]);
-    
+
     let num11 = (yardsValue * 9) % 12;
     if (num11 === 0) num11 = 12;
     setRaasi(currentRs[num11 as keyof typeof currentRs]);
-    
+
     let num12 = (yardsValue * 3) % 5;
     if (num12 === 0) num12 = 5;
     setTatwam(currentTt[num12 as keyof typeof currentTt]);
-    
+
     let num13 = (yardsValue * 9) % 4;
-    if (num13 === 0) num13 = 4; 
+    if (num13 === 0) num13 = 4;
     setJati(currentJt[num13 as keyof typeof currentJt]);
-    
+
     let num14 = (yardsValue * 12) % 16;
     if (num14 === 0) num14 = 16;
     setKala(num14);
   };
-  
+
   const generateHTMLContent = () => {
     const currentLang = content[language];
     return `<!DOCTYPE html>
@@ -530,13 +537,49 @@ const VastuShow = () => {
 </html>
 `;
   };
-// function handleSave(){
-//   console.log("Save functionality is not implemented yet.");
-//   Alert.alert(
-//     language === 'telugu' ? 'సేవ్ చేయడం లేదు' : 'Save Not Implemented',
-//     language === 'telugu' ? 'ఈ ఫీచర్ ప్రస్తుతం అందుబాటులో లేదు.' : 'This feature is currently not available.'
-//   );
-// }
+
+  // open modal to ask for name
+  function handleSave() {
+    setSaveName('');
+    setShowSaveModal(true);
+  }
+
+  // confirm save - logs values and closes modal
+  const onConfirmSave = () => {
+    if (!saveName.trim()) {
+      Alert.alert(
+        language === 'telugu' ? 'పేరు అవసరం' : 'Name required',
+        language === 'telugu' ? 'దయచేసి ఒక పేరు నమోదు చేయండి' : 'Please enter a name'
+      );
+      return;
+    }
+
+    const hFeet = height?.feet ?? 0;
+    const hInches = height?.inches ?? 0;
+    const wFeet = width?.feet ?? 0;
+    const wInches = width?.inches ?? 0;
+
+    const decimalHeight = uh ?? conversion(hFeet, hInches);
+    const decimalWidth = uw ?? conversion(wFeet, wInches);
+    const areaSqFeet = feets ?? parseFloat((decimalHeight * decimalWidth).toFixed(2));
+
+    console.log('--- Save Vastu Calculation ---');
+    console.log(`Name: ${saveName}`);
+    console.log(`Height (input): ${hFeet} ft ${hInches} in`);
+    console.log(`Height (decimal feet): ${decimalHeight} ft`);
+    console.log(`Width (input): ${wFeet} ft ${wInches} in`);
+    console.log(`Width (decimal feet): ${decimalWidth} ft`);
+    console.log(`Area: ${areaSqFeet} sq.ft`);
+    console.log('------------------------------');
+
+    Alert.alert(
+      language === 'telugu' ? 'సేవ్ అయింది' : 'Saved',
+      language === 'telugu' ? 'డేటా కన్సోల్‌లో నమోదైంది' : 'Data logged to console'
+    );
+
+    setShowSaveModal(false);
+  };
+
   const downloadPDF = async () => {
     try {
       const html = generateHTMLContent();
@@ -550,6 +593,13 @@ const VastuShow = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.noDataText}>Loading...</Text>
+      </View>
+    );
+  }
   if (!height || !width) {
     return (
       <View style={styles.container}>
@@ -560,6 +610,45 @@ const VastuShow = () => {
 
   return (
     <View style={styles.container}>
+      {/* Save Modal */}
+      <Modal
+        visible={showSaveModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowSaveModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={{ fontSize: 18, fontWeight: '700', marginBottom: 8 }}>
+              {language === 'telugu' ? 'పేరు నమోదు చేయండి' : 'Enter name'}
+            </Text>
+            <TextInput
+              value={saveName}
+              onChangeText={setSaveName}
+              placeholder={language === 'telugu' ? 'పేరు' : 'Name'}
+              style={styles.input}
+              autoFocus
+              returnKeyType="done"
+            />
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: '#E5E7EB' }]}
+                onPress={() => setShowSaveModal(false)}
+              >
+                <Text style={styles.modalButtonText}>{language === 'telugu' ? 'రద్దు' : 'Cancel'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: '#10B981' }]}
+                onPress={onConfirmSave}
+              >
+                <Text style={[styles.modalButtonText, { color: '#fff' }]}>{language === 'telugu' ? 'సేవ్' : 'Save'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Header with Download Button */}
       <View style={styles.header}>
         <Text style={styles.title}>{content[language].title}</Text>
@@ -592,7 +681,7 @@ const VastuShow = () => {
         {/* Results Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{content[language].calculationResults}</Text>
-          
+
           {/* Basic Calculations */}
           <View style={styles.resultsGrid}>
             {yards && (
@@ -640,13 +729,14 @@ const VastuShow = () => {
             {kala ? <ResultItem label={content[language].fields.kala} value={kala.toString()} /> : null}
           </View>
         </View>
-        {/* <TouchableOpacity 
-              style={styles.saveButton} 
-              onPress={handleSave}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.saveButtonText}>{content[language].save}</Text>
-            </TouchableOpacity> */}
+
+        {/* <TouchableOpacity
+          style={styles.saveButton}
+          onPress={handleSave}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.saveButtonText}>{content[language].save}</Text>
+        </TouchableOpacity> */}
       </ScrollView>
     </View>
   );
@@ -775,6 +865,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    marginBottom: 12,
   },
   resultItemLabel: {
     fontSize: 14,
@@ -795,28 +886,74 @@ const styles = StyleSheet.create({
     marginTop: 50,
     fontWeight: '500',
   },
-  // saveButton: {
-  //   backgroundColor: '#10B981',
-  //   borderRadius: 16,
-  //   paddingVertical: 16,
-  //   paddingHorizontal: 40,
-  //   alignSelf: 'stretch',
-  //   shadowColor: '#10B981',
-  //   shadowOffset: {
-  //     width: 0,
-  //     height: 4,
-  //   },
-  //   shadowOpacity: 0.3,
-  //   shadowRadius: 8,
-  //   elevation: 6,
-  // },
-  // saveButtonText: {
-  //   fontSize: 16,
-  //   fontWeight: '700',
-  //   color: '#FFFFFF',
-  //   textAlign: 'center',
-  //   letterSpacing: 0.5,
-  // }
+  saveButton: {
+    backgroundColor: '#10B981',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 40,
+    alignSelf: 'stretch',
+    shadowColor: '#10B981',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+    marginBottom: 24,
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    letterSpacing: 0.5,
+  },
+
+  /* Modal styles */
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  modalContent: {
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    fontSize: 16,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+  },
+  modalButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+  },
 });
 
 export default VastuShow;

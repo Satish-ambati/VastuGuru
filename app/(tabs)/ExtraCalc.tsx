@@ -211,7 +211,7 @@ const ExtraCalc = () => {
           )}
         </TouchableOpacity>
 
-        {/* Area */}
+        {/* Area
         <TouchableOpacity 
           style={[styles.optionCard, area && styles.activeOption]}
           onPress={() => {
@@ -246,10 +246,10 @@ const ExtraCalc = () => {
               )}
             </View>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* Perimeter */}
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
           style={[styles.optionCard, perimeter && styles.activeOption]}
           onPress={() => {
             setPerimeter(!perimeter);
@@ -283,7 +283,7 @@ const ExtraCalc = () => {
               )}
             </View>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </ScrollView>
   )
