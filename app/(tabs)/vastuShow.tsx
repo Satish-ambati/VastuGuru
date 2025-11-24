@@ -597,6 +597,7 @@ const VastuShow = () => {
     );
     console.log("Insert error:", error);
   }
+   
 );
 
 
