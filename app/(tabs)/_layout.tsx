@@ -126,7 +126,7 @@ export default function TabsLayout() {
           }}
           initialParams={screenOptions}
         />
-        {/* <Tabs.Screen
+        <Tabs.Screen
   name="history"
   options={{
     tabBarLabel: language === 'telugu' ? 'చరిత్ర' : 'History',
@@ -135,7 +135,7 @@ export default function TabsLayout() {
     ),
   }}
   initialParams={screenOptions}
-/> */}
+/>
 
         
         

@@ -1,11 +1,14 @@
-import { View, Text, StyleSheet, Alert, TouchableOpacity, ScrollView, useWindowDimensions, Modal, TextInput } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useRoute } from '@react-navigation/native'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createTable, insertPerson } from '@/DataBase/database';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRoute } from '@react-navigation/native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-
+import React, { useEffect, useState } from 'react';
+import { Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+useEffect(() => {
+    createTable(); // Create the table when the screen loads
+  }, []);
 type VastuParams = {
   height?: { feet: number; inches: number };
   width?: { feet: number; inches: number };
@@ -553,7 +556,7 @@ const VastuShow = () => {
       );
       return;
     }
-
+     
     const hFeet = height?.feet ?? 0;
     const hInches = height?.inches ?? 0;
     const wFeet = width?.feet ?? 0;
@@ -562,20 +565,40 @@ const VastuShow = () => {
     const decimalHeight = uh ?? conversion(hFeet, hInches);
     const decimalWidth = uw ?? conversion(wFeet, wInches);
     const areaSqFeet = feets ?? parseFloat((decimalHeight * decimalWidth).toFixed(2));
-
-    console.log('--- Save Vastu Calculation ---');
-    console.log(`Name: ${saveName}`);
-    console.log(`Height (input): ${hFeet} ft ${hInches} in`);
-    console.log(`Height (decimal feet): ${decimalHeight} ft`);
-    console.log(`Width (input): ${wFeet} ft ${wInches} in`);
-    console.log(`Width (decimal feet): ${decimalWidth} ft`);
-    console.log(`Area: ${areaSqFeet} sq.ft`);
-    console.log('------------------------------');
-
+    const person = {
+      name:saveName,
+      heightInFeets:hFeet,
+      heightInInches:hInches,
+      widthInFeets:wFeet,
+      widthInInches:wInches
+    }
+    insertPerson(
+      person.name,
+      person.heightInFeets,
+      person.heightInInches,
+      person.widthInFeets,
+      person.widthInInches,
+      () => {
+    // SUCCESS CALLBACK
+        Alert.alert(
+          language === "telugu" ? "సేవ్ అయింది" : "Saved",
+          language === "telugu"
+              ? "డేటా విజయవంతంగా సేవ్ చేయబడింది"
+              : "Data saved successfully"
+        );
+      },
+  (error) => {
+    // ERROR CALLBACK
     Alert.alert(
-      language === 'telugu' ? 'సేవ్ అయింది' : 'Saved',
-      language === 'telugu' ? 'డేటా కన్సోల్‌లో నమోదైంది' : 'Data logged to console'
+      language === "telugu" ? "లోపం" : "Error",
+      language === "telugu"
+        ? "డేటా సేవ్ కాలేదు"
+        : "Failed to save data"
     );
+    console.log("Insert error:", error);
+  }
+);
+
 
     setShowSaveModal(false);
   };
@@ -730,13 +753,13 @@ const VastuShow = () => {
           </View>
         </View>
 
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={styles.saveButton}
           onPress={handleSave}
           activeOpacity={0.8}
         >
           <Text style={styles.saveButtonText}>{content[language].save}</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
